@@ -68,7 +68,7 @@ export interface LinkChanges {
 /** Remote interface to create a perspective  */
 export interface NewPerspective {
   perspective: Secured<Perspective>;
-  update: Update;
+  update?: Update;
 }
 
 /** A perspective-like object that is useful as input for functions that can create a new perspective object and
@@ -129,10 +129,10 @@ export interface Join {
 }
 
 export interface SearchOptions {
-  under: Join[],
-  linksTo: Join[],
-  query: string,
-  orderBy: string
+  under: Join[];
+  linksTo: Join[];
+  query: string;
+  orderBy: string;
 }
 
 export interface DiffLens {
