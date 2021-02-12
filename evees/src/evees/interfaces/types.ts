@@ -129,8 +129,8 @@ export interface EveesMutationCreate {
 }
 
 export interface Join {
-  type: 'AND' | 'OR' | 'XOR';
-  negation: boolean;
+  type?: 'AND' | 'OR' | 'XOR';
+  negation?: boolean;
   id: string;
 }
 
