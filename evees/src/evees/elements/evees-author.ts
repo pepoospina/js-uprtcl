@@ -1,9 +1,11 @@
 import { LitElement, property, html, css } from 'lit-element';
+import { Signed } from 'src/patterns/interfaces/signable.js';
 
 import { servicesConnect } from '../../container/multi-connect.mixin.js';
 import { Logger } from '../../utils/logger.js';
 
 import { RemoteWithUI } from '../interfaces/remote.with-ui.js';
+import { Perspective } from '../interfaces/types.js';
 
 export class EveesAuthor extends servicesConnect(LitElement) {
   logger = new Logger('EVEES-AUTHOR');
@@ -13,6 +15,10 @@ export class EveesAuthor extends servicesConnect(LitElement) {
 
   @property({ type: String, attribute: 'remote-id' })
   remoteId!: string;
+
+  /** optionally receive an uref and derive the author and remote automatically */
+  @property({ type: String, attribute: 'uref' })
+  uref!: string;
 
   @property({ type: Boolean, attribute: 'show-name' })
   showName = false;
@@ -29,7 +35,13 @@ export class EveesAuthor extends servicesConnect(LitElement) {
   protected remote!: RemoteWithUI;
 
   async firstUpdated() {
-    if (!this.isConnected) return;
+    if (!this.userId) {
+      if (!this.uref) throw new Error('uref must be defined if user-id is not');
+
+      const perspective = await this.evees.client.store.getEntity<Signed<Perspective>>(this.uref);
+      this.userId = perspective.object.payload.creatorId;
+      this.remoteId = perspective.object.payload.remote;
+    }
     this.load();
   }
 
